@@ -1,0 +1,54 @@
+<%= link_to "View Profile", profile_path(current_user), class: "btn btn-primary" if current_user.present? %>
+<div class="container">
+  <div class="row text-center">
+    <% @paintings.each do |painting| %>      
+        <div class="col-md-3">
+          <a href="<%= profile_path(painting.record) %>" class="d-block mb-4 h-100">
+            <%= image_tag painting, class: "img-fluid img-thumbnail" %>
+            <%= painting.record.username %>
+          </a>
+        </div>
+      
+    <% end %>
+  </div>
+
+</div>
+
+<div class="container">
+  <div class="modal" id="login_register_form" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="tab-content">
+            <div id="register" class="tab-pane fade">
+              <%= render 'users/registrations/new' %>
+            </div>
+            <div id="login" class="tab-pane active">
+              <% if flash[:alert].present? %>
+                <p style="color: red;">
+                  <%= flash[:alert] %>
+                </p>
+              <% end %>
+              <%#= render 'login' %>
+              <%= render 'users/sessions/new' %>
+            </div>
+            <div id="after_register" class="tab-pane fade">
+              <%#= render 'after_register' %>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script type="text/javascript">
+  <% if params[:controller] == "users/sessions" %>
+    $(".login_register_button").trigger('click');
+  <% end %>
+</script>

@@ -1,0 +1,94 @@
+
+<div class="row">
+
+  <div class="col-md-4 photo_image_div">
+    <% if @user.profile_photo.attachment.present? %>
+      <%= image_tag @user.profile_photo, class: "img-thumbnail add_image_url", style: 'width:200px; height: 200px;' %>  
+    <% else %>
+      <%= image_tag 'icon14.jpeg', class: "img-thumbnail add_image_url", style: 'width:200px; height: 200px;' %> 
+    <% end %>
+
+    <% if current_user.present? && current_user.id == @user.id %>
+      <%= form_tag 'upload_picture', class: 'upload_picture' do %>
+        <%= file_field_tag :picture, class: "picture profile_pic", "data-picture_type": "photo", style: "display: none;" %>
+        <a id="profile_pic_btn" class="btn btn-info" style="width: 200px;">Upload profile picture</a>
+        <%= hidden_field_tag :user_id, @user.id %>
+      <% end %>
+    <% end %>
+  </div>
+  <div class="col-md-8">
+    <% if current_user.present? && current_user.id == @user.id %>
+      <span style="float:right;">
+        <a data-toggle="modal" data-target="#edit_profile" id="edit_profile_btn">
+          Edit User
+        </a>
+      </span>
+    <% end %>
+    <span>
+      <h2><%= @user.username.titleize %></h2>
+      <%= @user.city %>,<%= @user.country %>
+    </span>
+    <%= @user.about %>
+    <br/>
+    <br/>
+    <div style="float: right;">      
+      <%= "#{@user.email} | #{@user.phone}" %>
+    </div>
+  </div>
+</div>
+<hr style="border: 1px dashed lightgrey">
+
+<div style="float:right;">
+  <% if current_user.present? && current_user.id == @user.id %>
+    <%= form_tag 'upload_picture', class: 'upload_picture' do %>
+      <%= file_field_tag :picture, class: "picture profile_painting", "data-picture_type": "painting", style: "display: none;" %>
+      <a id="profile_painting_btn">Add Painting</a>
+      <%= hidden_field_tag :user_id, @user.id %>
+    <% end %>
+  <% end %>
+</div>
+<br/>
+<br/>
+
+<div class="painting_image_div container">
+  <div class="row">
+    <% if current_user && current_user.id == @user.id %>
+      <% paintings = @user.paintings %>
+    <% else %>
+      <% paintings = @user.paintings.select{|a| a.show? } %>
+    <% end %>
+    <% paintings.each_with_index do |painting, index| %>
+      <%= render 'profile/painting', painting: painting %>
+    <% end %>
+  </div>
+</div>
+
+
+<%= link_to "Back", root_path %>
+
+<div class="modal" id="edit_profile" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <% if flash[:errors].present? %>
+            <p style="color: red;">
+              <%= flash[:errors].join("\n") %>
+            </p>
+          <% end %>
+          <%= render 'users/registrations/edit', locals: {resource: @user} %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script type="text/javascript">
+  <% if flash[:errors].present? %>
+    $(".edit_profile_btn").trigger('click');
+  <% end %>
+</script>

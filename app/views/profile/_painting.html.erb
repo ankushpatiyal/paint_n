@@ -1,0 +1,10 @@
+<div class="col-md-3 text-center">
+  <div style="border: 1px solid grey; margin-bottom: 30px;">
+    <%= image_tag painting, class: "img-thumbnail", style: "width:200px; height: 200px;" %>
+    <div>
+      <% if current_user.present? && current_user.id == @user.id %>
+        <%= check_box_tag 'show_painting', true, painting.show, data: {url: hide_painting_path(painting), method: :post, remote: true } %>
+      <% end %>
+    </div>
+  </div>
+</div>
